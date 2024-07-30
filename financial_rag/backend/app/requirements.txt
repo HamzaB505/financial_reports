@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pyyaml
+# Add other required packages here
+react
+node
+
+
