@@ -14,6 +14,8 @@ dist/
 downloads/
 eggs/
 .env
+chroma/
+data
 .eggs/
 lib/
 lib64/

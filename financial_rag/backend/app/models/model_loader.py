@@ -1,33 +1,35 @@
 from transformers import AutoModel, AutoTokenizer
 import openai
+import torch
+from tqdm import tqdm
 
 class ModelLoader:
-        """
-        This method explains the functionality of the ModelLoader class.
+    """
+    This method explains the functionality of the ModelLoader class.
 
-        The ModelLoader class is responsible for loading and managing models for embedding text and querying OpenAI's API.
+    The ModelLoader class is responsible for loading and managing models for embedding text and querying OpenAI's API.
 
-        Key components:
-        1. Initialization (__init__):
-           - Stores the configuration, including the OpenAI API key.
-           - Initializes embedding_model and tokenizer as None.
+    Key components:
+    1. Initialization (__init__):
+       - Stores the configuration, including the OpenAI API key.
+       - Initializes embedding_model and tokenizer as None.
 
-        2. load_embedding_model:
-           - Loads a pre-trained model and tokenizer based on the configuration.
-           - Uses the Hugging Face Transformers library.
+    2. load_embedding_model:
+       - Loads a pre-trained model and tokenizer based on the configuration.
+       - Uses the Hugging Face Transformers library.
 
-        3. get_embeddings:
-           - Converts input text into embeddings using the loaded model.
-           - Tokenizes the input, passes it through the model, and returns the mean of the last hidden state.
+    3. get_embeddings:
+       - Converts input text into embeddings using the loaded model.
+       - Tokenizes the input, passes it through the model, and returns the mean of the last hidden state.
 
-        4. query_openai:
-           - Sends a prompt to OpenAI's API for text completion.
-           - Uses the stored API key for authentication.
-           - Returns the generated text response.
+    4. query_openai:
+       - Sends a prompt to OpenAI's API for text completion.
+       - Uses the stored API key for authentication.
+       - Returns the generated text response.
 
-        This class combines local embedding capabilities with OpenAI's powerful language model,
-        allowing for versatile text processing and generation tasks.
-        """
+    This class combines local embedding capabilities with OpenAI's powerful language model,
+    allowing for versatile text processing and generation tasks.
+    """
     def __init__(self, config):
         self.config = config
         self.embedding_model = None
@@ -41,11 +43,11 @@ class ModelLoader:
 
     def get_embeddings(self, text):
         inputs = self.tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-        outputs = self.embedding_model(**inputs)
-        return outputs.last_hidden_state.mean(dim=1).detach().numpy()
+        with torch.no_grad():
+            outputs = self.embedding_model(**inputs)
+        return outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
 
     def query_openai(self, prompt):
         openai.api_key = self.openai_api_key
         response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=150)
         return response.choices[0].text.strip()
-

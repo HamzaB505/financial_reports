@@ -1,4 +1,5 @@
 from models.model_loader import ModelLoader
+from tqdm import tqdm
 
 class Embedder:
     """
@@ -23,8 +24,6 @@ class Embedder:
         self.model_loader.load_embedding_model()
 
     def embed_documents(self, documents):
-        embeddings = []
-        for doc in documents:
-            embedding = self.model_loader.get_embeddings(doc)
-            embeddings.append(embedding)
-        return embeddings
+        output = [list(self.model_loader.get_embeddings(doc).astype(float)) for doc in tqdm(documents)]
+
+        return output

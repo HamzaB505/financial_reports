@@ -1,8 +1,12 @@
 fastapi
 uvicorn
 pyyaml
-# Add other required packages here
 react
 node
-
-
+transformers
+openai
+langchain-community
+langchain
+PyPDF2
+numpy
+pypdf
