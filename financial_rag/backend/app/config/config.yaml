@@ -1,0 +1,4 @@
+embedding_model: "financial/bert-base-uncased"
+embedding_dimension: 768
+openai_api_key: ${OPENAI_API_KEY}
+
