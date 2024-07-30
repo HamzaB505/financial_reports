@@ -1,5 +1,6 @@
 from transformers import AutoModel, AutoTokenizer
 import openai
+from openai import OpenAI
 import torch
 from tqdm import tqdm
 
@@ -35,6 +36,7 @@ class ModelLoader:
         self.embedding_model = None
         self.tokenizer = None
         self.openai_api_key = config['openai_api_key']
+        self.client = OpenAI(openai_api_key=self.openai_api_key)
 
     def load_embedding_model(self):
         model_name = self.config['embedding_model']
@@ -49,5 +51,12 @@ class ModelLoader:
 
     def query_openai(self, prompt):
         openai.api_key = self.openai_api_key
-        response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=150)
-        return response.choices[0].text.strip()
+
+        # gets API Key from environment variable OPENAI_API_KEY
+        completion = self.client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=prompt
+            )
+        output = completion.choices[0].message.content
+
+        return output

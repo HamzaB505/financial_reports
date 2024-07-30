@@ -1,0 +1,13 @@
+{
+    "Income_Statement_Template": "Revenue: $X billion\nCost of Revenue: $X billion\nGross Profit: $X billion\nOperating Expenses: $X billion\nOperating Income: $X billion\nNet Income: $X billion\nEarnings Per Share (EPS): $X\n\nYear-over-Year Growth:\n- Revenue: X%\n- Net Income: X%\n- EPS: X%",
+
+    "Balance_Sheet_Template": "Total Assets: $X billion\n- Cash and Cash Equivalents: $X billion\n- Accounts Receivable: $X billion\n- Inventory: $X billion\n\nTotal Liabilities: $X billion\n- Accounts Payable: $X billion\n- Long-term Debt: $X billion\n\nShareholders' Equity: $X billion\n\nKey Ratios:\n- Current Ratio: X\n- Debt-to-Equity Ratio: X",
+
+    "Cash_Flow_Statement_Template": "Cash Flow from Operations: $X billion\nCash Flow from Investing: $X billion\nCash Flow from Financing: $X billion\nFree Cash Flow: $X billion\n\nYear-over-Year Change in Free Cash Flow: X%",
+
+    "Segment_Performance_Template": "Segment 1 (e.g., North America):\n- Revenue: $X billion (X% of total)\n- Operating Income: $X billion\n- YoY Growth: X%\n\nSegment 2 (e.g., Europe):\n- Revenue: $X billion (X% of total)\n- Operating Income: $X billion\n- YoY Growth: X%\n\n[Repeat for each segment]",
+
+    "Key_Performance_Indicators_Template": "Industry-Specific KPI 1 (e.g., Monthly Active Users): X million\nIndustry-Specific KPI 2 (e.g., Average Revenue Per User): $X\nIndustry-Specific KPI 3 (e.g., Customer Acquisition Cost): $X\n\nYoY Change:\n- KPI 1: X%\n- KPI 2: X%\n- KPI 3: X%",
+
+    "Management_Outlook_Template": "Next Quarter Guidance:\n- Revenue: $X billion to $X billion\n- EPS: $X to $X\n\nFull Year Guidance:\n- Revenue: $X billion to $X billion\n- EPS: $X to $X\n\nKey Focus Areas:\n1. [Area 1]\n2. [Area 2]\n3. [Area 3]\n\nNotable Challenges or Opportunities Mentioned:\n1. [Challenge/Opportunity 1]\n2. [Challenge/Opportunity 2]"
+}
