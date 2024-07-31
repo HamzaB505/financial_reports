@@ -20,7 +20,7 @@ class Embedder:
     specified in the configuration, making it suitable for processing financial texts.
     """
     def __init__(self, config):
-        self.model_loader = ModelLoader(config)
+        self.model_loader = ModelLoader(**config)
         self.model_loader.load_embedding_model()
 
     def embed_documents(self, documents):

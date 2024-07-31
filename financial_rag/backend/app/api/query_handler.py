@@ -1,5 +1,5 @@
 from models.model_loader import ModelLoader
-from database.vector_db import VectorDB
+from services.vector_db import VectorDB
 import json
 import re
 
@@ -26,13 +26,16 @@ class QueryHandler:
         vector_db (VectorDB): An instance of VectorDB for similarity search operations
         templates (dict): A dictionary of prompt templates loaded from a JSON file
     """
-    def __init__(self, config):
-        self.model_loader = ModelLoader(config)
-        self.vector_db = VectorDB(config)
+    def __init__(self,
+                 config,
+                 templates_path):
+        self.model_loader = ModelLoader(**config)
+        self.vector_db = VectorDB(embedder=self.model_loader)
+        self.templates_path = templates_path
         self.load_templates()
 
     def load_templates(self):
-        with open('../util/prompt_templates.json') as f:
+        with open(f'{self.templates_path}/prompt_templates.json') as f:
             self.templates = json.load(f)
 
     def process_query(self, query):

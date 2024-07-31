@@ -31,12 +31,12 @@ class ModelLoader:
     This class combines local embedding capabilities with OpenAI's powerful language model,
     allowing for versatile text processing and generation tasks.
     """
-    def __init__(self, config):
+    def __init__(self, **config):
         self.config = config
         self.embedding_model = None
         self.tokenizer = None
         self.openai_api_key = config['openai_api_key']
-        self.client = OpenAI(openai_api_key=self.openai_api_key)
+        self.client = OpenAI()
 
     def load_embedding_model(self):
         model_name = self.config['embedding_model']
