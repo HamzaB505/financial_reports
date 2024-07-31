@@ -4,6 +4,28 @@ import json
 import re
 
 class QueryHandler:
+    """
+    QueryHandler class for processing financial queries using a combination of embedding models and language models.
+
+    This class handles the entire query processing pipeline, including:
+    1. Loading and managing prompt templates
+    2. Embedding queries
+    3. Searching for relevant documents in a vector database
+    4. Preparing context from similar documents
+    5. Generating responses using OpenAI's language model
+
+    Args:
+        config (dict): A configuration dictionary containing:
+            - 'embedding_model': Name of the embedding model to use
+            - 'openai_api_key': API key for OpenAI services
+            - Vector database configuration parameters
+            - Any other necessary configuration options
+
+    Attributes:
+        model_loader (ModelLoader): An instance of ModelLoader for embedding and language model operations
+        vector_db (VectorDB): An instance of VectorDB for similarity search operations
+        templates (dict): A dictionary of prompt templates loaded from a JSON file
+    """
     def __init__(self, config):
         self.model_loader = ModelLoader(config)
         self.vector_db = VectorDB(config)

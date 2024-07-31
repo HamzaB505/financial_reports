@@ -3,6 +3,7 @@ from services.embedder import Embedder
 from services.vector_db import VectorDB
 from services.load_documents import load_documents
 from services.vector_db import VectorDB
+from api.query_handler import QueryHandler
 import logging
 
 from dotenv import load_dotenv
@@ -45,10 +46,10 @@ def main(scrap_on=False):
     chunks = vector_db.split_documents(documents)
     vector_db.add_to_chroma(chunks=chunks,
                             chroma_path=CHROMA_PATH)
+    print("Done loading the data")
 
     # Example query
-    #result = query_handler.process_query("What were the top performing sectors last quarter?")
-    print("Done")
+    result = query_handler.process_query("What were the top performing sectors last quarter?")
 
 if __name__ == "__main__":
     main()
