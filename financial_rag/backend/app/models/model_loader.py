@@ -3,6 +3,8 @@ import openai
 from openai import OpenAI
 import torch
 from tqdm import tqdm
+from langchain_core.output_parsers import StrOutputParser
+from langchain_openai.chat_models import ChatOpenAI
 
 class ModelLoader:
     """
@@ -36,7 +38,8 @@ class ModelLoader:
         self.embedding_model = None
         self.tokenizer = None
         self.openai_api_key = config['openai_api_key']
-        self.client = OpenAI()
+        self.openai_model = ChatOpenAI(openai_api_key=self.openai_api_key,
+                                       model="gpt-4o-mini")
 
     def load_embedding_model(self):
         model_name = self.config['embedding_model']
@@ -49,14 +52,11 @@ class ModelLoader:
             outputs = self.embedding_model(**inputs)
         return outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
 
-    def query_openai(self, prompt):
-        openai.api_key = self.openai_api_key
+    #def query_openai(self, prompt):
+        #openai.api_key = self.openai_api_key
 
         # gets API Key from environment variable OPENAI_API_KEY
-        completion = self.client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=prompt
-            )
-        output = completion.choices[0].message.content
+        #
+        #output = completion.choices[0].message.content
 
-        return output
+        #return output

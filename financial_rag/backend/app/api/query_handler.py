@@ -2,6 +2,7 @@ from models.model_loader import ModelLoader
 from services.vector_db import VectorDB
 import json
 import re
+from langchain_core.output_parsers import StrOutputParser
 
 class QueryHandler:
     """
@@ -38,7 +39,7 @@ class QueryHandler:
         with open(f'{self.templates_path}/prompt_templates.json') as f:
             self.templates = json.load(f)
 
-    def process_query(self, query):
+    def rag_query(self, query):
         query_embedding = self.model_loader.get_embeddings([query])[0]
         similar_docs = self.vector_db.search(query_embedding)
         if len(similar_docs) > 0:
@@ -71,8 +72,11 @@ class QueryHandler:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"Context: {context}\nQuery: {query}"}
         ]
-        
-        response = self.model_loader.query_openai(messages)
+        parser = StrOutputParser()
+        model = self.model_loader.openai_model
+        chain = prompt | model | parser
+
+        response = chain.invoke({"input": messages})
 
         return response
 
