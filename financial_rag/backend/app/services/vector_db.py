@@ -1,14 +1,10 @@
 import os
 import shutil
-import argparse
 from tqdm import tqdm
 
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.schema import Document
-from .embedder import Embedder  # Make sure to import your Embedder class
-
-from dotenv import load_dotenv
 import logging
 
 
@@ -60,6 +56,7 @@ class VectorDB:
         if len(new_chunks):
             logger.info(f"👉 Adding new documents: {len(new_chunks)}")
             new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
+            print(len(new_chunks))
             for i, chunk in tqdm(enumerate(new_chunks)):
                     logger.info(f"Adding document {i+1}/{len(new_chunks)}")
                     vector_db.add_documents([chunk], ids=[new_chunk_ids[i]])

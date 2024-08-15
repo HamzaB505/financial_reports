@@ -4,11 +4,6 @@ from langchain_community.document_loaders import TextLoader
 from langchain_community.document_loaders.pdf import PyPDFDirectoryLoader
 from PyPDF2.errors import PdfStreamError
 
-# Configure logging to display time, logging level, and message.
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 
 def load_documents(DATA_PATH):
     documents = []
@@ -53,4 +48,5 @@ def load_documents(DATA_PATH):
     
     process_directory(DATA_PATH)
     logging.info(f"Total documents loaded: {len(documents)}")
+
     return documents

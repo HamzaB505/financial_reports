@@ -4,8 +4,8 @@ import logging
 from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import WebDriverException  # Add this import
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
@@ -150,25 +150,25 @@ def extract_pdf_links_selenium(url):
 def main():
     # Define the companies, their sectors, and the URLs of their financial reports
     companies = [
-        {"name": "Apple", "sector": "Technology", "url": "https://investor.apple.com/sec-filings/default.aspx"},
-        {"name": "Microsoft", "sector": "Technology", "url": "https://www.microsoft.com/en-us/Investor/annual-reports.aspx"},
-        {"name": "Johnson & Johnson", "sector": "Healthcare", "url": "https://www.investor.jnj.com/financials/quarterly-results/default.aspx"},
-        {"name": "JPMorgan Chase", "sector": "Finance", "url": "https://www.jpmorganchase.com/ir/quarterly-earnings"},
-        {"name": "Walmart", "sector": "Retail", "url": "https://stock.walmart.com/financials/quarterly-results/default.aspx"},
-        {"name": "Amazon", "sector": "Technology", "url": "https://ir.aboutamazon.com/quarterly-results/default.aspx"},
-        {"name": "Berkshire Hathaway", "sector": "Finance", "url": "https://www.berkshirehathaway.com/reports.html"},
-        {"name": "Tesla", "sector": "Automotive", "url": "https://ir.tesla.com/#quarterly-disclosure"},
-        {"name": "Alphabet", "sector": "Technology", "url": "https://abc.xyz/investor/"},
-        {"name": "Meta", "sector": "Technology", "url": "https://investor.fb.com/financials/default.aspx"},
-        {"name": "NVIDIA", "sector": "Technology", "url": "https://investor.nvidia.com/financial-info/financial-reports/default.aspx"},
-        {"name": "Procter & Gamble", "sector": "Consumer Goods", "url": "https://www.pginvestor.com/financial-reporting/quarterly-results/default.aspx"},
-        {"name": "Visa", "sector": "Finance", "url": "https://investor.visa.com/financial-information/quarterly-earnings/default.aspx"},
-        {"name": "UnitedHealth", "sector": "Healthcare", "url": "https://www.unitedhealthgroup.com/investors/financial-reports.html"},
-        {"name": "ExxonMobil", "sector": "Energy", "url": "https://corporate.exxonmobil.com/investors/investor-relations"},
-        {"name": "Pfizer", "sector": "Healthcare", "url": "https://investors.pfizer.com/Investors/Financials/Quarterly-Results/"},
-        {"name": "Coca-Cola", "sector": "Consumer Goods", "url": "https://investors.coca-colacompany.com/filings-reports/resource-center"},
-        {"name": "PepsiCo", "sector": "Consumer Goods", "url": "https://investors.pepsico.com/investors/financial-information/quarterly-earnings/index.html"},
-        {"name": "AbbVie", "sector": "Healthcare", "url": "https://investors.abbvie.com/annual-report-proxy"}
+    {"name": "Apple", "sector": "Technology", "url": "https://investor.apple.com/sec-filings/default.aspx"},
+    {"name": "Microsoft", "sector": "Technology", "url": "https://www.microsoft.com/en-us/Investor/annual-reports.aspx"},
+    {"name": "Johnson & Johnson", "sector": "Healthcare", "url": "https://www.investor.jnj.com/financials/quarterly-results/default.aspx"},
+    {"name": "JPMorgan Chase", "sector": "Finance", "url": "https://www.jpmorganchase.com/ir/quarterly-earnings"},
+    {"name": "Walmart", "sector": "Retail", "url": "https://stock.walmart.com/financials/quarterly-results/default.aspx"},
+    {"name": "Amazon", "sector": "Technology", "url": "https://ir.aboutamazon.com/quarterly-results/default.aspx"},
+    {"name": "Berkshire Hathaway", "sector": "Finance", "url": "https://www.berkshirehathaway.com/reports.html"},
+    {"name": "Tesla", "sector": "Automotive", "url": "https://ir.tesla.com/#quarterly-disclosure"},
+    {"name": "Alphabet", "sector": "Technology", "url": "https://abc.xyz/investor/"},
+    {"name": "Meta", "sector": "Technology", "url": "https://investor.fb.com/financials/default.aspx"},
+    {"name": "NVIDIA", "sector": "Technology", "url": "https://investor.nvidia.com/financial-info/financial-reports/default.aspx"},
+    {"name": "Procter & Gamble", "sector": "Consumer Goods", "url": "https://www.pginvestor.com/financial-reporting/quarterly-results/default.aspx"},
+    {"name": "Visa", "sector": "Finance", "url": "https://investor.visa.com/financial-information/quarterly-earnings/default.aspx"},
+    {"name": "UnitedHealth", "sector": "Healthcare", "url": "https://www.unitedhealthgroup.com/investors/financial-reports.html"},
+    {"name": "ExxonMobil", "sector": "Energy", "url": "https://corporate.exxonmobil.com/investors/investor-relations"},
+    {"name": "Pfizer", "sector": "Healthcare", "url": "https://investors.pfizer.com/Investors/Financials/Quarterly-Results/"},
+    {"name": "Coca-Cola", "sector": "Consumer Goods", "url": "https://investors.coca-colacompany.com/filings-reports/resource-center"},
+    {"name": "PepsiCo", "sector": "Consumer Goods", "url": "https://investors.pepsico.com/investors/financial-information/quarterly-earnings/index.html"},
+    {"name": "AbbVie", "sector": "Healthcare", "url": "https://investors.abbvie.com/annual-report-proxy"}
     ]
     base_folder = os.path.join(DOWNLOAD_DIR, f"financial_reports_{datetime.now().strftime('%Y_%m_%d')}")
     os.makedirs(base_folder, exist_ok=True)
