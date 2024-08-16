@@ -1,6 +1,7 @@
 import os
 import shutil
 from tqdm import tqdm
+from dotenv import load_dotenv
 
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -11,6 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+load_dotenv()
 
 
 class VectorDB:
@@ -26,11 +28,12 @@ class VectorDB:
     It uses an Embedder for document embedding and Chroma as the vector store.
     """
     def __init__(self,
-                 embedder,
-                 chroma_path):
+                 embedder):
         self.embedder = embedder
+        self.chroma_path = os.environ["CHROMA_PATH"]
+        print(self.chroma_path)
         self.vector_db = Chroma(
-                            persist_directory=chroma_path,
+                            persist_directory=self.chroma_path,
                             embedding_function=self.embedder
                         )
     def add_to_chroma(self,
