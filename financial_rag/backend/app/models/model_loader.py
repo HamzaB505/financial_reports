@@ -12,7 +12,7 @@ load_dotenv()
 class LLMModels:
 
     def __init__(self):
-        self.openai_model = ChatOpenAI(model="gpt-4o-mini")
+        self.openai_model = ChatOpenAI(model="gpt-4o-mini", temperature=0.8)
         self.parser = StrOutputParser()
         self.history= []
 
