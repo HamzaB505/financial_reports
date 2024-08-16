@@ -1,0 +1,11 @@
+flask
+langchain
+openai
+langchain_community
+python-dotenv
+transformers
+torch
+chromadb
+PyPDF2
+pypdf
+

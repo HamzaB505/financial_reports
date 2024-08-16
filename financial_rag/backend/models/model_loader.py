@@ -1,8 +1,3 @@
-from transformers import AutoModel, AutoTokenizer
-import openai
-import torch
-from tqdm import tqdm
-from openai import OpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai.chat_models import ChatOpenAI
 from dotenv import load_dotenv
@@ -20,7 +15,7 @@ class LLMModels:
         """Add a new prompt to the context."""
         self.history.append({"role": "user", "content": prompt})
 
-    async def query_model(self, prompt):
+    def query_model(self, prompt):
         """Query the model using the chain invocation pattern."""
         self.add_context(prompt)
         # Construct the chain: messages -> model -> parser
