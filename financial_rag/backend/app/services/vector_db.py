@@ -26,24 +26,25 @@ class VectorDB:
     It uses an Embedder for document embedding and Chroma as the vector store.
     """
     def __init__(self,
-                 embedder):
+                 embedder,
+                 chroma_path):
         self.embedder = embedder
-
+        self.vector_db = Chroma(
+                            persist_directory=chroma_path,
+                            embedding_function=self.embedder
+                        )
     def add_to_chroma(self,
                       chunks: list[Document],
                       chroma_path: str):
 
         logger.info('Starting embedding')
 
-        vector_db = Chroma(
-            persist_directory=chroma_path,
-            embedding_function=self.embedder
-        )
+        
         logger.info("Finished embedding")
         chunks_with_ids = self.create_chunk_ids(chunks)
 
         #Add or Update the documents
-        existing_items = vector_db.get(include=[]) #IDs are always included by default
+        existing_items = self.vector_db.get(include=[]) #IDs are always included by default
         existing_ids = set(existing_items["ids"])
         logger.info(f"Number of existing documents in DB: {len(existing_ids)}")
         
@@ -59,14 +60,13 @@ class VectorDB:
             print(len(new_chunks))
             for i, chunk in tqdm(enumerate(new_chunks)):
                     logger.info(f"Adding document {i+1}/{len(new_chunks)}")
-                    vector_db.add_documents([chunk], ids=[new_chunk_ids[i]])
+                    self.vector_db.add_documents([chunk], ids=[new_chunk_ids[i]])
             logger.info("Persisting changes...")
-            vector_db.persist()
+            self.vector_db.persist()
             logger.info("Changes persisted.")
         else:
             logger.info("✅ No new documents to add")
 
-        self.vector_db = vector_db
 
     def split_documents(self, documents: list[Document]):
         """

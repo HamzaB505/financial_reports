@@ -11,8 +11,7 @@ from langchain_core.output_parsers import StrOutputParser
 class QueryHandler:
     """
     """
-    def __init__(self,
-                 templates_path):
+    def __init__(self):
         self.llm = LLMModels()
         self.embedder = Embedder(Config.embedding_model)
         self.vector_db = VectorDB(embedder=self.embedder)

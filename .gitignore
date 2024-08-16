@@ -91,4 +91,5 @@ cython_debug/
 main_test.py
 
 
+*.ipynb
 
