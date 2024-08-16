@@ -5,7 +5,7 @@ load_dotenv()
 class Config:
     embedding_model = "google-bert/bert-base-uncased"
     embedding_dimension = 768
-    templates_path = "../util"
+    templates_path = "./util"
     system_prompt = """
         You are an expert financial analyst AI assistant, specialized in analyzing quarterly financial reports.
         Your task is to extract, interpret, and explain key financial information from these reports. You should focus on:

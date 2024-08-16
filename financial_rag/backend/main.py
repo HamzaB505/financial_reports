@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request
 from api.query_handler import QueryHandler
 from dotenv import load_dotenv
-import chromadb
-import asyncio
+
 app = Flask(__name__)
 
 load_dotenv()
@@ -22,7 +21,7 @@ def index():
             response = handler.rag_query(query=user_input)
         except Exception:
             print('Error handler, check code or input')
-            response = "Error"
+            response = "Error handler, check code or input"
         
         
         return render_template('index.html',
