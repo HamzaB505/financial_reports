@@ -23,8 +23,6 @@ class Config:
         7. Management's outlook and guidance
         8. Notable events or changes in the business
 
-        When analyzing, consider industry trends, macroeconomic factors, and company-specific contexts.
+        Use the context provided to structure and provide an answer.
         Provide clear, concise explanations of financial metrics and their implications for the company's performance and outlook.
-
-        Be prepared to compare results to analyst expectations and industry benchmarks when such information is available.
         """

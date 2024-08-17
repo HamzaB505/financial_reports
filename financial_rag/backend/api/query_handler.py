@@ -64,7 +64,6 @@ class QueryHandler:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"Context: {context} \nQuery: {query}"}
         ]
-        print(messages)
 
         response = self.llm.query_model(messages)
         print(response)
@@ -72,6 +71,7 @@ class QueryHandler:
 
     def prepare_context(self, similar_docs):
         context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in similar_docs])
+        print([doc.metadata["source"] for doc, _score in similar_docs])
         return context_text
 
     def load_templates(self):
