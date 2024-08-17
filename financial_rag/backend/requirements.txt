@@ -8,4 +8,5 @@ torch
 chromadb
 PyPDF2
 pypdf
-
+upstash_vector
+python-decouple

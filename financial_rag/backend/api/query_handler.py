@@ -7,7 +7,8 @@ import json
 import re
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
-
+from langchain_community.vectorstores.upstash import UpstashVectorStore
+import os
 import logging
 import os
 
@@ -21,20 +22,23 @@ class QueryHandler:
     def __init__(self):
         self.llm = LLMModels()
         self.embedder = Embedder(Config.embedding_model)
-        self.vector_db = Chroma(
+        
+        if Config.use_chroma:
+            self.vector_db = Chroma(
                             persist_directory=os.environ["CHROMA_PATH"],
                             embedding_function=self.embedder
                         )
+        else:
+            self.vector_db = UpstashVectorStore(embedding=True)
+
+
         print("vectordb")
 
 
     def lookup_db(self, query):
-        print("inside lookup")
-        query_embedding = self.embedder.get_embeddings([query])
-        print("embedding")
+
         similar_docs = self.vector_db.similarity_search_with_score(query, k=5)
         print(similar_docs)
-        print("similar_docs")
         return similar_docs
     
     

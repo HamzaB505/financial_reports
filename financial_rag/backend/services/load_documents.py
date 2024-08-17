@@ -3,6 +3,20 @@ import logging
 from langchain_community.document_loaders import TextLoader
 from langchain_community.document_loaders.pdf import PyPDFDirectoryLoader
 from PyPDF2.errors import PdfStreamError
+from tqdm import tqdm
+
+
+
+
+def prepare_source(documents):
+    for doc in tqdm(documents):
+        source_data_split = doc.metadata["source"].split("\\")
+
+        source_data_split = list(dict.fromkeys(source_data_split))
+        k = [source_data_split.remove(l) for l in ["..", "data", "documents"]]
+            
+        source = '/'.join([str(elem) for elem in source_data_split])
+        doc.metadata["source"] = source
 
 
 def load_documents(DATA_PATH):
@@ -48,5 +62,7 @@ def load_documents(DATA_PATH):
     
     process_directory(DATA_PATH)
     logging.info(f"Total documents loaded: {len(documents)}")
+    prepare_source(documents)
+    logging.info(f"Formatted source correctly")
 
     return documents

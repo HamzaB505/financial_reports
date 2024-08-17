@@ -19,7 +19,7 @@ class LLMModels:
         """Query the model using the chain invocation pattern."""
         self.add_context(prompt)
         # Construct the chain: messages -> model -> parser
-        chain = prompt | self.openai_model | self.parser
+        chain = self.openai_model | self.parser
 
         # Invoke the chain to get the response
         response = chain.invoke({"input": prompt})

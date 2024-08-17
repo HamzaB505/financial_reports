@@ -10,6 +10,7 @@ class Embedder:
         self.tokenizer = AutoTokenizer.from_pretrained(embedding_model)
 
     def get_embeddings(self, text):
+        text = text.replace("\n", " ")
         inputs = self.tokenizer(text, return_tensors="pt", padding=True, truncation=True)
         with torch.no_grad():
             outputs = self.embedding_model(**inputs)
@@ -21,6 +22,7 @@ class Embedder:
         return output
 
     def embed_query(self, query):
+        query = query.replace("\n", " ")
         inputs = self.tokenizer(query, return_tensors="pt", padding=True, truncation=True)
         with torch.no_grad():
             outputs = self.embedding_model(**inputs)

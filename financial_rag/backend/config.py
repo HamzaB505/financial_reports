@@ -1,10 +1,14 @@
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
 class Config:
     embedding_model = "google-bert/bert-base-uncased"
+    UPSTASH_VECTOR_REST_URL = os.environ["UPSTASH_VECTOR_REST_URL"]
+    UPSTASH_VECTOR_REST_TOKEN = os.environ["UPSTASH_VECTOR_REST_TOKEN"]
     embedding_dimension = 768
+    use_chroma = False
     templates_path = "../util"
     system_prompt = """
         You are an expert financial analyst AI assistant, specialized in analyzing quarterly financial reports.
