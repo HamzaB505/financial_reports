@@ -17,16 +17,6 @@ class LLMModels:
         """Add a new prompt to the context."""
         self.history.append({"role": "user", "content": prompt})
 
-<<<<<<< HEAD
-    def query_model(self, prompt):
-        """Query the model using the chain invocation pattern."""
-        self.add_context(prompt)
-        # Construct the chain: messages -> model -> parser
-        chain = self.openai_model | self.parser
-
-        # Invoke the chain to get the response
-        response = chain.invoke({"input": prompt})
-=======
     def query_model(self, messages):
         print('inside query function')
         print(self.openai_model)
@@ -38,5 +28,4 @@ class LLMModels:
         response = completion.choices[0].message.content
         print(response)
         print("response end")
->>>>>>> main
         return response
