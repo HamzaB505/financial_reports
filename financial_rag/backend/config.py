@@ -9,7 +9,7 @@ class Config:
     UPSTASH_VECTOR_REST_TOKEN = os.environ["UPSTASH_VECTOR_REST_TOKEN"]
     embedding_dimension = 768
     use_chroma = False
-    templates_path = "../util"
+    templates_path = "./util"
     system_prompt = """
         You are an expert financial analyst AI assistant, specialized in analyzing quarterly financial reports.
         Your task is to extract, interpret, and explain key financial information from these reports. You should focus on:

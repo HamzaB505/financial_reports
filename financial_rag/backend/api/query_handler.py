@@ -51,15 +51,15 @@ class QueryHandler:
             context = self.prepare_context(similar_docs)
         else:
             context = ""
-
-        template = self.get_relevant_template(query)
-        print(template)
-
+        print(context)
+        #template = self.get_relevant_template(query)
+        #print(template)
+        template = None
         system_prompt = Config.system_prompt
-        
+        print("system prompting")
         if template:
             system_prompt += f"\n\nUse the following template to structure your response:\n{template}"
-
+            print("used template")
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"Context: {context} \nQuery: {query}"}
@@ -67,7 +67,7 @@ class QueryHandler:
         print(messages)
 
         response = self.llm.query_model(messages)
-
+        print(response)
         return response
 
     def prepare_context(self, similar_docs):
@@ -80,6 +80,7 @@ class QueryHandler:
 
     def get_relevant_template(self, query):
         self.load_templates()
+        print("loaded templates")
         query_lower = query.lower()
         if re.search(r'income|revenue|profit|eps', query_lower):
             return self.templates.get('Income_Statement_Template')
