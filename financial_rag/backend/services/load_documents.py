@@ -3,8 +3,13 @@ import logging
 from langchain_community.document_loaders import TextLoader
 from langchain_community.document_loaders.pdf import PyPDFDirectoryLoader
 from PyPDF2.errors import PdfStreamError
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain.schema import Document
+
 from tqdm import tqdm
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 
@@ -18,6 +23,31 @@ def prepare_source(documents):
         source = '/'.join([str(elem) for elem in source_data_split])
         doc.metadata["source"] = source
 
+def split_documents(documents: list[Document]):
+    """
+    Split documents into smaller chunks.
+
+    This method takes a list of documents and splits them into smaller chunks
+    using a RecursiveCharacterTextSplitter. It's useful for preparing documents
+    for embedding and storage in a vector database.
+
+    Args:
+        documents (list[Document]): A list of documents to be split.
+
+    Returns:
+        list[Document]: A list of document chunks.
+    """
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=500,
+        length_function=len,
+        add_start_index=True,
+        is_separator_regex=False,
+    )
+    chunks = text_splitter.split_documents(documents)
+    logger.info(f"Split {len(documents)} documents into {len(chunks)} chunks")
+    
+    return chunks
 
 def load_documents(DATA_PATH):
     documents = []
@@ -66,3 +96,43 @@ def load_documents(DATA_PATH):
     logging.info(f"Formatted source correctly")
 
     return documents
+
+
+def create_chunk_ids(chunks):
+    """
+    Create unique IDs for document chunks.
+
+    This static method generates a unique ID for each chunk based on its source,
+    page number, and position within the page. It modifies the chunks in-place
+    by adding an 'id' field to each chunk's metadata.
+
+    Parameters:
+        chunks (list[Document]): A list of document chunks to process.
+
+    Returns:
+        list[Document]: The input list of chunks with added 'id' metadata.
+    """
+    last_page_id = None
+    current_chunk_index = 0
+
+    logger.info("Crearting chunks")
+
+    for chunk in tqdm(chunks):
+        source = chunk.metadata.get("source")
+        page = chunk.metadata.get("page")
+        current_page_id = f"{source}:{page}"
+
+        # if the page ID is the same as the last one, increment the index
+        if current_page_id == last_page_id:
+            current_chunk_index += 1
+        else:
+            current_chunk_index = 0
+        # Calculate the chunk ID.
+        chunk_id = f"{current_page_id}:{current_chunk_index}"
+        last_page_id = current_page_id
+
+        chunk.metadata["id"] = chunk_id
+    logger.info("Chunks created")
+
+    return chunks
+
