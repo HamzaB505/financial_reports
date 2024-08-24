@@ -5,7 +5,9 @@ from langchain_community.document_loaders.pdf import PyPDFDirectoryLoader
 from PyPDF2.errors import PdfStreamError
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.schema import Document
-
+from upstash_vector import Vector
+from langchain_experimental.text_splitter import SemanticChunker
+from langchain_openai.embeddings import OpenAIEmbeddings
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
@@ -18,7 +20,7 @@ def prepare_source(documents):
         source_data_split = doc.metadata["source"].split("\\")
 
         source_data_split = list(dict.fromkeys(source_data_split))
-        k = [source_data_split.remove(l) for l in ["..", "data", "documents"]]
+        k = [source_data_split.remove(l) for l in ["..", "data", "documents"] if l in source_data_split]
             
         source = '/'.join([str(elem) for elem in source_data_split])
         doc.metadata["source"] = source
@@ -47,6 +49,13 @@ def split_documents(documents: list[Document]):
     chunks = text_splitter.split_documents(documents)
     logger.info(f"Split {len(documents)} documents into {len(chunks)} chunks")
     
+    return chunks
+
+def semantic_split(documents):
+    text_splitter = SemanticChunker(OpenAIEmbeddings())
+    chunks = text_splitter.split_documents(documents)
+    logger.info(f"Split {len(documents)} documents into {len(chunks)} chunks")
+
     return chunks
 
 def load_documents(DATA_PATH):
@@ -136,3 +145,23 @@ def create_chunk_ids(chunks):
 
     return chunks
 
+def enrich_metadata(document):
+    doc_name = document.metadata["source"].split("/")[-1].split(".")[0]
+    if "qtr" in doc_name:
+        document.metadata["year"] = f"""20{doc_name.split("qtr")[-1]}"""
+        document.metadata["quarter"] = doc_name.split("qtr")[0]
+    elif "ar" in doc_name:
+        document.metadata["year"] = doc_name.split("ar")[0]
+        document.metadata["quarter"] = ""
+
+def create_vectorstore(documents, embedder):
+    vector_store = []
+    for i, doc in tqdm(enumerate(documents)):
+        if doc.page_content:
+            embeddings = embedder.get_text_embedding(doc.page_content)
+            enrich_metadata(doc)
+            v = Vector(id=f"id_{i}", vector=embeddings,
+                       metadata=doc.metadata, data=doc.page_content)
+            vector_store.append(v)
+    logging.info("Documents loaded & embedded")
+    return vector_store
