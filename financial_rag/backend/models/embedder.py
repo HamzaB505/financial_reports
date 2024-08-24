@@ -6,7 +6,7 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 
 class Embedder:
 
-    def __init__(self, embedding_model):
+    def __init__(self, embedding_model=None):
         
         if Config.use_openai_embedder:
             self.embedding_model = OpenAIEmbedding(model=Config.openai_embedding_model)
