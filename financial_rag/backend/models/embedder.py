@@ -1,13 +1,18 @@
 from transformers import AutoModel, AutoTokenizer
 import torch
 from tqdm import tqdm
-
+from config import Config
+from llama_index.embeddings.openai import OpenAIEmbedding
 
 class Embedder:
 
     def __init__(self, embedding_model):
-        self.embedding_model = AutoModel.from_pretrained(embedding_model)
-        self.tokenizer = AutoTokenizer.from_pretrained(embedding_model)
+        
+        if Config.use_openai_embedder:
+            self.embedding_model = OpenAIEmbedding(model=Config.openai_embedding_model)
+        else:
+            self.embedding_model = AutoModel.from_pretrained(embedding_model)
+            self.tokenizer = AutoTokenizer.from_pretrained(embedding_model)
 
     def get_embeddings(self, text):
         text = text.replace("\n", " ")

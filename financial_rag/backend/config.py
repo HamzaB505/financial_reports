@@ -4,11 +4,17 @@ import os
 load_dotenv()
 
 class Config:
+    # embedding settings
     embedding_model = "google-bert/bert-base-uncased"
+    embedding_dimension = 768
+    use_openai_embedder = True
+    openai_embedding_model = "text-embedding-3-small"
+    # vector database seetings
     UPSTASH_VECTOR_REST_URL = os.environ["UPSTASH_VECTOR_REST_URL"]
     UPSTASH_VECTOR_REST_TOKEN = os.environ["UPSTASH_VECTOR_REST_TOKEN"]
-    embedding_dimension = 768
     use_chroma = False
+
+    # Templates & system prompts settings
     templates_path = "./util"
     system_prompt = """
         You are an expert financial analyst AI assistant, specialized in analyzing quarterly financial reports.
