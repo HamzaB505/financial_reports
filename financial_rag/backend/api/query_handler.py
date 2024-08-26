@@ -1,16 +1,15 @@
 from models.model_loader import LLMModels
 from models.embedder import Embedder
-from services.vector_db import VectorDB
 from config import Config
+from util.utils import extract_info_from_query
+from upstash_vector import Index
+
 from langchain_community.vectorstores.chroma import Chroma
 import json
 import re
-from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
-from langchain_community.vectorstores.upstash import UpstashVectorStore
 import os
 import logging
-import os
 
 
 load_dotenv()
@@ -23,29 +22,41 @@ class QueryHandler:
         self.llm = LLMModels()
         self.embedder = Embedder(Config.embedding_model)
         
-        if Config.use_chroma:
-            self.vector_db = Chroma(
-                            persist_directory=os.environ["CHROMA_PATH"],
-                            embedding_function=self.embedder
-                        )
-        else:
-            self.vector_db = UpstashVectorStore(embedding=True)
+        self.index = Index(url=os.environ["UPSTASH_VECTOR_REST_URL"],
+                           token=os.environ["UPSTASH_VECTOR_REST_TOKEN"])
 
 
-        print("vectordb")
-
-
-    def lookup_db(self, query):
-
-        similar_docs = self.vector_db.similarity_search_with_score(query, k=5)
+    def query_db(self, query, query_metadata):
+        name_spaces = self.index.list_namespaces()
+        wanted_company = [name for name in name_spaces if query_metadata["company"] in name][0]
+        vector = self.embedder.embedding_model.get_query_embedding(query)
+        logging.info(f"DB company namespace: {wanted_company} & {query_metadata["company"]}")
+        query_conf = {"vector": vector, 
+                      "top_k": 5,
+                      "include_vectors": False,
+                      "include_metadata": True,
+                      "include_data": True,
+                      "namespace": wanted_company,
+                      }
+        metadata_filter = ""
+        if query_metadata["year"] is not None:
+            metadata_filter = f"""year = '{query_metadata["year"]}'"""
+        if query_metadata["quarter"] is not None:
+            metadata_filter = metadata_filter+" AND "+f"""quarter == '' """
+        query_conf["metadata_filter"] = metadata_filter
+        #"filter": "year = '' AND quarter = '1st'"
+        similar_docs = self.index.query(**query_conf)
+        
         print(similar_docs)
         return similar_docs
     
     
     def rag_query(self, query):
+        query = query.lower()
+        # to be used in querying database
+        query_metadata = extract_info_from_query(query, query_metadata) 
         print("inside rag_query")
-        similar_docs = self.lookup_db(query=query)
-        print(similar_docs)
+        similar_docs = self.query_db(query=query)
         print("after query")
         if len(similar_docs) > 0:
             context = self.prepare_context(similar_docs)
@@ -70,7 +81,7 @@ class QueryHandler:
         return response
 
     def prepare_context(self, similar_docs):
-        context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in similar_docs])
+        context_text = "\n\n---\n\n".join([doc.data for doc in similar_docs])
         print([doc.metadata["source"] for doc, _score in similar_docs])
         return context_text
 
