@@ -1,10 +1,20 @@
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
 class Config:
+    # embedding settings
     embedding_model = "google-bert/bert-base-uncased"
     embedding_dimension = 768
+    use_openai_embedder = True
+    openai_embedding_model = "text-embedding-3-small"
+    # vector database seetings
+    UPSTASH_VECTOR_REST_URL = os.environ["UPSTASH_VECTOR_REST_URL"]
+    UPSTASH_VECTOR_REST_TOKEN = os.environ["UPSTASH_VECTOR_REST_TOKEN"]
+    use_chroma = False
+
+    # Templates & system prompts settings
     templates_path = "./util"
     system_prompt = """
         You are an expert financial analyst AI assistant, specialized in analyzing quarterly financial reports.
@@ -19,8 +29,6 @@ class Config:
         7. Management's outlook and guidance
         8. Notable events or changes in the business
 
-        When analyzing, consider industry trends, macroeconomic factors, and company-specific contexts.
+        Use the context provided to structure and provide an answer.
         Provide clear, concise explanations of financial metrics and their implications for the company's performance and outlook.
-
-        Be prepared to compare results to analyst expectations and industry benchmarks when such information is available.
         """
