@@ -4,7 +4,7 @@ from config import Config
 from util.utils import extract_info_from_query
 from upstash_vector import Index
 
-from langchain_community.vectorstores.chroma import Chroma
+import cohere
 import json
 import re
 from dotenv import load_dotenv
@@ -21,9 +21,11 @@ class QueryHandler:
     def __init__(self):
         self.llm = LLMModels()
         self.embedder = Embedder()
-        
         self.index = Index(url=os.environ["UPSTASH_VECTOR_REST_URL"],
                            token=os.environ["UPSTASH_VECTOR_REST_TOKEN"])
+        self.reranker = cohere.Client(os.environ['COHERE_API_KEY'])
+        self.use_reranker = True
+
     
     
     def enrich_query_metadata(self, query, query_metadata):
@@ -56,7 +58,7 @@ class QueryHandler:
         vector = self.embedder.embedding_model.get_query_embedding(query)
         logging.info(f"""DB company namespace: {wanted_company} & {query_metadata["company"]}""")
         query_conf = {"vector": vector, 
-                      "top_k": 5,
+                      "top_k": 10,
                       "include_vectors": False,
                       "include_metadata": True,
                       "include_data": True,
@@ -71,8 +73,22 @@ class QueryHandler:
         #"filter": "year = '' AND quarter = '1st'"
         similar_docs = self.index.query(**query_conf)
         
-        print(similar_docs)
         return similar_docs
+    
+    def apply_reranker(self, query, similar_docs):
+        print("inside rerank func")
+        documents = [f"""source: {doc.metadata["source"]}, page: {doc.metadata["page"]}, year: {doc.metadata["year"]} \n"""+ doc.data for doc in similar_docs]
+        print("doc_reranker")
+        response = self.reranker.rerank(
+                    model="rerank-english-v3.0",
+                    query=query,
+                    documents=documents,
+                    return_documents=True,
+                    top_n=3,
+                )
+        print("result of reranker")
+        return response
+    
     
     
     def rag_query(self, query):
@@ -80,12 +96,19 @@ class QueryHandler:
         # to be used in querying database
         query_metadata = extract_info_from_query(query)
         logging.info(query_metadata)
-        print("inside rag_query")
+
+        logging.info("inside rag_query")
+
         similar_docs = self.query_db(query,
                                      query_metadata)
         print("after query")
-        if len(similar_docs) > 0:
-            context = self.prepare_context(similar_docs)
+        if self.use_reranker:
+            reranked_docs = self.apply_reranker(query, similar_docs)
+
+            context_documents = [res.document.text for res in reranked_docs.results]
+
+        if len(context_documents) > 0:
+            context = self.prepare_context(context_documents)
         else:
             context = ""
         print(context)
@@ -107,8 +130,10 @@ class QueryHandler:
         return response
 
     def prepare_context(self, similar_docs):
-        context_text = "\n\n---\n\n".join([doc.data for doc in similar_docs])
-        print([doc.metadata["source"] for doc in similar_docs])
+        if self.use_reranker:
+            context_text = "\n\n---\n\n".join(similar_docs)
+        else:
+            context_text = "\n\n---\n\n".join([doc.data for doc in similar_docs])
         return context_text
 
     def load_templates(self):
