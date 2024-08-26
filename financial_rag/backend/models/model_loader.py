@@ -26,6 +26,7 @@ class LLMModels:
             )
         print("completion end")
         response = completion.choices[0].message.content
+
         print(response)
         print("response end")
         return response
