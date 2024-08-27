@@ -4,7 +4,7 @@ from config import Config
 from util.utils import extract_info_from_query
 from upstash_vector import Index
 
-from langchain_community.vectorstores.chroma import Chroma
+import cohere
 import json
 import re
 from dotenv import load_dotenv
@@ -20,19 +20,45 @@ class QueryHandler:
     """
     def __init__(self):
         self.llm = LLMModels()
-        self.embedder = Embedder(Config.embedding_model)
-        
+        self.embedder = Embedder()
         self.index = Index(url=os.environ["UPSTASH_VECTOR_REST_URL"],
                            token=os.environ["UPSTASH_VECTOR_REST_TOKEN"])
+        self.reranker = cohere.Client(os.environ['COHERE_API_KEY'])
+        self.use_reranker = True
 
+    
+    
+    def enrich_query_metadata(self, query, query_metadata):
+        logging.info(self.index)
+        name_spaces = self.index.list_namespaces()
+        print("name spaces found")
+        print(name_spaces)
+
+        # regex can be a bitch sometimes and not recognize the company name
+        if query_metadata["company"] is not None:
+            wanted_company = [name for name in name_spaces if query_metadata["company"] in name][0]
+        else:
+            # brute force that mf
+            ## list of all companies we have
+            companies_found = [c for c in ["berkshire hathaway", "tesla", "alphabet", "exxonmobil"] if c in query]
+            print(companies_found)
+            for name in name_spaces:
+                # ignore the default namespace cuz we dont use it
+                if name!="":
+                    av_name_space = name.split("_")[0].lower()
+                    query_company = companies_found[0].split(" ")[0].lower()
+                    if query_company in av_name_space:
+                        wanted_company = name 
+        return wanted_company
 
     def query_db(self, query, query_metadata):
-        name_spaces = self.index.list_namespaces()
-        wanted_company = [name for name in name_spaces if query_metadata["company"] in name][0]
+
+        wanted_company = self.enrich_query_metadata(query, query_metadata)
+        print(wanted_company)
         vector = self.embedder.embedding_model.get_query_embedding(query)
-        logging.info(f"DB company namespace: {wanted_company} & {query_metadata["company"]}")
+        logging.info(f"""DB company namespace: {wanted_company} & {query_metadata["company"]}""")
         query_conf = {"vector": vector, 
-                      "top_k": 5,
+                      "top_k": 10,
                       "include_vectors": False,
                       "include_metadata": True,
                       "include_data": True,
@@ -42,29 +68,52 @@ class QueryHandler:
         if query_metadata["year"] is not None:
             metadata_filter = f"""year = '{query_metadata["year"]}'"""
         if query_metadata["quarter"] is not None:
-            metadata_filter = metadata_filter+" AND "+f"""quarter == '' """
-        query_conf["metadata_filter"] = metadata_filter
+            metadata_filter = metadata_filter+" AND "+f"""quarter == '{query_metadata["quarter"]}' """
+        query_conf["filter"] = metadata_filter
         #"filter": "year = '' AND quarter = '1st'"
         similar_docs = self.index.query(**query_conf)
         
-        print(similar_docs)
         return similar_docs
+    
+    def apply_reranker(self, query, similar_docs):
+        print("inside rerank func")
+        documents = [f"""source: {doc.metadata["source"]}, page: {doc.metadata["page"]}, year: {doc.metadata["year"]} \n"""+ doc.data for doc in similar_docs]
+        print("doc_reranker")
+        response = self.reranker.rerank(
+                    model="rerank-english-v3.0",
+                    query=query,
+                    documents=documents,
+                    return_documents=True,
+                    top_n=3,
+                )
+        print("result of reranker")
+        return response
+    
     
     
     def rag_query(self, query):
         query = query.lower()
         # to be used in querying database
-        query_metadata = extract_info_from_query(query, query_metadata) 
-        print("inside rag_query")
-        similar_docs = self.query_db(query=query)
+        query_metadata = extract_info_from_query(query)
+        logging.info(query_metadata)
+
+        logging.info("inside rag_query")
+
+        similar_docs = self.query_db(query,
+                                     query_metadata)
         print("after query")
-        if len(similar_docs) > 0:
-            context = self.prepare_context(similar_docs)
+        if self.use_reranker:
+            reranked_docs = self.apply_reranker(query, similar_docs)
+
+            context_documents = [res.document.text for res in reranked_docs.results]
+
+        if len(context_documents) > 0:
+            context = self.prepare_context(context_documents)
         else:
             context = ""
         print(context)
         #template = self.get_relevant_template(query)
-        #print(template)
+        
         template = None
         system_prompt = Config.system_prompt
         print("system prompting")
@@ -81,8 +130,10 @@ class QueryHandler:
         return response
 
     def prepare_context(self, similar_docs):
-        context_text = "\n\n---\n\n".join([doc.data for doc in similar_docs])
-        print([doc.metadata["source"] for doc, _score in similar_docs])
+        if self.use_reranker:
+            context_text = "\n\n---\n\n".join(similar_docs)
+        else:
+            context_text = "\n\n---\n\n".join([doc.data for doc in similar_docs])
         return context_text
 
     def load_templates(self):

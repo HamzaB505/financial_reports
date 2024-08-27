@@ -20,9 +20,8 @@ def index():
         try:
             response = handler.rag_query(query=user_input)
         except Exception:
-            print('Error handler, check code or input')
             response = "Error handler, check code or input"
-        
+            print(response)
         
         return render_template('index.html',
                                user_input=user_input,
