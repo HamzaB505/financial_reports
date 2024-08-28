@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot_style.css') }}">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            if (sidebar.style.width === '250px') {
+                sidebar.style.width = '0';
+            } else {
+                sidebar.style.width = '250px';
+            }
+        }
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            var chatbox = document.getElementById('chatbox');
+            var sendButton = document.getElementById('sendButton');
+
+            // Show loading indicator
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<div class="spinner"></div>';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/chatbot", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var jsonResponse = JSON.parse(xhr.responseText);
+
+                    // Create user message bubble
+                    var userBubble = document.createElement('div');
+                    userBubble.className = 'bubble user';
+                    userBubble.innerHTML = message;
+                    chatbox.appendChild(userBubble);
+
+                    // Create bot response bubble
+                    var botBubble = document.createElement('div');
+                    botBubble.className = 'bubble bot';
+                    botBubble.innerHTML = jsonResponse.response.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    chatbox.appendChild(botBubble);
+
+                    // Reset input and scroll to bottom
+                    document.getElementById('message').value = "";
+                    chatbox.scrollTop = chatbox.scrollHeight;
+
+                    // Process MathJax for LaTeX rendering
+                    MathJax.typeset();
+
+                    // Hide loading indicator
+                    sendButton.disabled = false;
+                    sendButton.innerHTML = 'Send';
+                }
+            };
+            xhr.send("message=" + encodeURIComponent(message));
+        }
+    </script>
+</head>
+<body>
+    <div id="sidebar" class="sidebar">
+        <button class="closebtn" onclick="toggleSidebar()">×</button>
+        <a href="/">Landing Page</a>
+        <a href="/signup">Sign Up / Login</a>
+        <a href="/chatbot">Chatbot</a>
+        <a href="/dashboard">Dashboard</a>
+    </div>
+
+    <div id="content" class="full-page-content">
+        <button class="openbtn" onclick="toggleSidebar()">☰</button>
+        <div id="chatbox" class="chatbox"></div>
+        <div class="input-area">
+            <textarea id="message" rows="2" placeholder="Type your message here..."></textarea>
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</body>
+</html>

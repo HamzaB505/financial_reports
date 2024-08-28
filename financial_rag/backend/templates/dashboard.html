@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financial Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h2>Your Financial Dashboard</h2>
-    <img src="data:image/png;base64,{{ plot_url }}" alt="Financial Plot"><br><br>
-    <button onclick="window.location.href='/chatbot'">Back to Chatbot</button>
+    <div class="container">
+        <h2>Your Financial Dashboard</h2>
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Financial Plot" style="width:100%; height:auto;"><br><br>
+        <button onclick="window.location.href='/chatbot'">Back to Chatbot</button>
+    </div>
 </body>
 </html>
