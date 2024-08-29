@@ -13,3 +13,4 @@ python-decouple
 llama_index
 werkzeug
 flask_sqlalchemy
+plotly
