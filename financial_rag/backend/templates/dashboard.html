@@ -65,7 +65,7 @@
         function addPlot() {
             const company = document.getElementById('company-select').value;
             const plot_type = document.getElementById('plot-type-select').value;
-
+        
             fetch('/get_plot_data', {
                 method: 'POST',
                 headers: {
@@ -80,11 +80,26 @@
             .then(data => {
                 const plotContainer = document.getElementById('plot1-container');
                 plotContainer.innerHTML = data.plot_html;
+        
+                // Find all <script> elements in the returned HTML
+                const scripts = plotContainer.querySelectorAll('script');
+        
+                // Re-run each script
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.body.appendChild(newScript); // Append the script to the body or another element
+                });
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
         }
+        
     </script>
 </body>
 
