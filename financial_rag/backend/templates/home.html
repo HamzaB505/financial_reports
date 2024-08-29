@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Financial App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing_style.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Financial App Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/signup">Sign Up / Login</a></li>
+                <li><a href="#" onclick="alert('Please sign up to access this feature.'); return false;">Chatbot</a></li>
+                <li><a href="#" onclick="alert('Please sign up to access this feature.'); return false;">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Our Financial App</h1>
+            <p>This app helps you analyze your finances with ease.</p>
+            <form id="waitlistForm">
+                <input type="email" id="email" name="email" placeholder="Enter your email for a free trial" required>
+                <button type="submit">Join the Waitlist</button>
+            </form>
+            <button onclick="window.location.href='/signup'">Sign Up / Login</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Financial App. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('waitlistForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            alert('Thank you for joining the waitlist! We will notify you at ' + email);
+            document.getElementById('email').value = ''; // Clear the input field
+        });
+    </script>
+</body>
+
+</html>

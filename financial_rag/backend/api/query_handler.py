@@ -33,14 +33,15 @@ class QueryHandler:
         name_spaces = self.index.list_namespaces()
         print("name spaces found")
         print(name_spaces)
-
+        print(query_metadata["company"])
         # regex can be a bitch sometimes and not recognize the company name
         if query_metadata["company"] is not None:
-            wanted_company = [name for name in name_spaces if query_metadata["company"] in name][0]
+            
+            wanted_company = [name for name in name_spaces if query_metadata["company"].lower().split(" ")[0] in name.lower()][0]
         else:
             # brute force that mf
             ## list of all companies we have
-            companies_found = [c for c in ["berkshire hathaway", "tesla", "alphabet", "exxonmobil"] if c in query]
+            companies_found = [c for c in ["berkshire hathaway", "tesla", "alphabet", "exxonmobil"] if c in query.lower()]
             print(companies_found)
             for name in name_spaces:
                 # ignore the default namespace cuz we dont use it
