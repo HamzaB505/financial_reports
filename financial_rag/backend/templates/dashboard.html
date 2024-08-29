@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <button class="closebtn" onclick="toggleSidebar()">×</button>
+        <a href="/">Home page</a>
+        <a href="/chatbot">Chatbot</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="content">
+        <button class="openbtn" onclick="toggleSidebar()">☰</button>
+        <h1>Welcome to your Dashboard</h1>
+
+        <div class="toolbar">
+            <div class="info-bar">
+                <div class="select-group">
+                    <label for="company-select">Select Company:</label>
+                    <select id="company-select">
+                        <option value="AAPL">Apple (AAPL)</option>
+                        <option value="MSFT">Microsoft (MSFT)</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                </div>
+
+                <div class="select-group">
+                    <label for="plot-type-select">Select Plot Type:</label>
+                    <select id="plot-type-select">
+                        <option value="revenue_vs_profit">Revenue vs Profit</option>
+                        <!-- Add more plot types as needed -->
+                    </select>
+                </div>
+
+                <button id="generate-plot" onclick="addPlot()">Generate Plot</button>
+            </div>
+            <div class="user-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </div>
+
+        <div class="plots">
+            <div class="plot" id="plot1">
+                <p>Plot 1: <span id="plot1-title">Comparison Plot</span></p>
+                <div id="plot1-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.querySelector('.sidebar');
+            sidebar.style.width = sidebar.style.width === '250px' ? '0' : '250px';
+        }
+
+        function addPlot() {
+            const company = document.getElementById('company-select').value;
+            const plot_type = document.getElementById('plot-type-select').value;
+        
+            fetch('/get_plot_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    company: company,
+                    plot_type: plot_type
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const plotContainer = document.getElementById('plot1-container');
+                plotContainer.innerHTML = data.plot_html;
+        
+                // Find all <script> elements in the returned HTML
+                const scripts = plotContainer.querySelectorAll('script');
+        
+                // Re-run each script
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.body.appendChild(newScript); // Append the script to the body or another element
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        
+    </script>
+</body>
+
+</html>

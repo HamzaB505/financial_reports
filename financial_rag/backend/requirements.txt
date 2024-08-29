@@ -11,3 +11,6 @@ pypdf
 upstash_vector
 python-decouple
 llama_index
+werkzeug
+flask_sqlalchemy
+plotly
