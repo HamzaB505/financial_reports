@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash,render_template_string
 from flask_sqlalchemy import SQLAlchemy
 import matplotlib.pyplot as plt
 import io
@@ -7,6 +7,7 @@ from api.query_handler import QueryHandler
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from api.finance_modeling_api import Finance_API
 import plotly.graph_objs as go
 import json
 from flask import jsonify
@@ -19,12 +20,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-# Dummy data for demonstration purposes
-financial_data = {
-    'stocks': [100, 120, 80, 130, 150],
-    'bonds': [50, 60, 55, 65, 70],
-    'crypto': [200, 180, 220, 210, 230]
-}
 
 @app.route('/')
 def landing_page():
@@ -166,6 +161,14 @@ def generate_revenue_vs_profit_plot(company, financial_data):
 
     plot_html = fig.to_html(full_html=False)
     return plot_html
+
+@app.route('/news')
+def news():
+    # Sample list of dictionaries
+    fapi = Finance_API()
+    articles = fapi.get_news() 
+    print(articles)
+    return render_template("news.html", articles=articles["content"])
 
 
 if __name__ == '__main__':
