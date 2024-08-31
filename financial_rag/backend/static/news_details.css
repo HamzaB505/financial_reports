@@ -17,7 +17,7 @@ body {
     left: 0;
     background-color: #333;
     overflow-x: hidden;
-    transition: 0.5s;
+    transition: width 0.5s;
     padding-top: 60px;
 }
 
@@ -27,7 +27,7 @@ body {
     font-size: 18px;
     color: #f1f1f1;
     display: block;
-    transition: 0.3s;
+    transition: color 0.3s;
 }
 
 .sidebar a:hover {
@@ -59,6 +59,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 2;
 }
 
 .openbtn:hover {
@@ -67,8 +68,18 @@ body {
 
 /* Content area styling */
 .content {
-    margin-left: 250px;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 16px;
+    transition: margin-left 0.5s;
+}
+
+.sidebar-open .content {
+    margin-left: 250px;
+}
+
+.sidebar-closed .content {
+    margin-left: 0;
 }
 
 h1 {
@@ -122,8 +133,51 @@ h1 {
     color: white;
 }
 
+/* Main article styling */
+.main-article {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
 
-/* News grid layout */
+.main-article h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.date-author {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.article-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.article-content {
+    line-height: 1.6;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+/* Related news styling using news grid */
+.related-news {
+    margin-top: 40px;
+}
+
+.related-news h2 {
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Use existing news grid layout for related news */
 .news-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -178,7 +232,7 @@ h1 {
     text-decoration: underline;
 }
 
-/* Hover effect */
+/* Hover effect for news cards */
 .news-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

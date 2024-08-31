@@ -174,5 +174,15 @@ def news():
     return render_template("news.html", articles=articles["content"])
 
 
+@app.route('/news_details')
+def news_detail():
+    # Example article data (in a real app, fetch from a database)
+    fapi = Finance_API()
+    articles = fapi.get_news()["content"]
+    article = articles[0]
+    related_articles = articles[1:]
+    return render_template('news_details.html', article=article, related_articles=related_articles)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
