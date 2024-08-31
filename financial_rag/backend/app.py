@@ -54,7 +54,7 @@ def signup():
 
         session['user_id'] = new_user.id
         flash('Thank you for signing up!')
-        return redirect(url_for('chatbot'))
+        return redirect(url_for('news_details'))
     return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -163,16 +163,6 @@ def generate_revenue_vs_profit_plot(company, financial_data):
 
     plot_html = fig.to_html(full_html=False)
     return plot_html
-
-@app.route('/news')
-def news():
-    fapi = Finance_API()
-    articles = fapi.get_news() 
-    for a in articles["content"]:
-        a["content"] = Markup(a["content"])
-    print(articles)
-    return render_template("news.html", articles=articles["content"])
-
 
 @app.route('/news_details')
 def news_detail():
