@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash,render_template_string
+from flask import (Flask, render_template, request, redirect,
+                   url_for, jsonify, session, flash)
+from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 import matplotlib.pyplot as plt
 import io
@@ -164,9 +166,10 @@ def generate_revenue_vs_profit_plot(company, financial_data):
 
 @app.route('/news')
 def news():
-    # Sample list of dictionaries
     fapi = Finance_API()
     articles = fapi.get_news() 
+    for a in articles["content"]:
+        a["content"] = Markup(a["content"])
     print(articles)
     return render_template("news.html", articles=articles["content"])
 

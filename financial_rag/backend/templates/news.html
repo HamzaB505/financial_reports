@@ -21,7 +21,7 @@
     <div class="content">
         <button class="openbtn" onclick="toggleSidebar()">☰</button>
         <h1>Financial News</h1>
-
+        <p> News </p>
         <!-- Hero Section for Featured Article -->
         <section class="hero">
             <div class="hero-content">
@@ -34,6 +34,7 @@
             </div>
         </section>
 
+
         <!-- Grid Layout for Remaining Articles -->
         <section class="news-grid">
             {% for article in articles[1:] %}
@@ -41,13 +42,9 @@
                     <img src="{{ article.image }}" alt="{{ article.title }}">
                     <div class="news-info">
                         <h3>{{ article.title }}</h3>
-                        <!-- Display first sentence only -->
-                        <p class="summary" id="summary-{{ loop.index }}">
-                            {{ article["content"].split('.')[0] }}.
-                        </p>
                         <!-- Full summary, initially hidden -->
                         <p class="full-summary" id="full-summary-{{ loop.index }}" style="display: none;">
-                            {{ article["content"]|safe }}
+                            {{ article["content"] }}
                         </p>
                         <button class="expand-btn" onclick="toggleSummary({{ loop.index }})">Read More</button>
                         <a href="{{ article.link }}" class="read-more">Read full article</a>
