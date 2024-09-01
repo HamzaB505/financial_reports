@@ -175,7 +175,7 @@ def generate_revenue_vs_profit_plot(company, financial_data):
     return plot_html
 
 @app.route('/news_details')
-def news_detail():
+def news_details():
     # Example article data (in a real app, fetch from a database)
     articles = fapi.get_news()["content"]
     article = articles[0]
