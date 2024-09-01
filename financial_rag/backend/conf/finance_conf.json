@@ -1,0 +1,6 @@
+{
+    "News": "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=100&",
+    "Ticker_list": "https://financialmodelingprep.com/api/v3/financial-statement-symbol-lists?",
+    "Transcripts": "https://financialmodelingprep.com/api/v3/earning_call_transcript",
+    "Balance_sheet": "https://financialmodelingprep.com/api/v3/balance-sheet-statement/"
+}

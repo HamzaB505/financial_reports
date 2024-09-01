@@ -20,7 +20,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ["FLASK_KEY"]
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+fapi = Finance_API()
 db = SQLAlchemy(app)
 
 @app.route('/')
@@ -107,6 +107,16 @@ def dashboard():
         return redirect(url_for('login'))
     return render_template('dashboard.html')
 
+
+
+@app.route('/')
+def index():
+    # Example list of options
+    fapi.get_balance_sheet()  # 1000 options
+
+    return render_template('index.html', options=options)
+
+
 @app.route('/get_plot_data', methods=['POST'])
 def get_plot_data():
     company = request.json.get('company')
@@ -167,7 +177,6 @@ def generate_revenue_vs_profit_plot(company, financial_data):
 @app.route('/news_details')
 def news_detail():
     # Example article data (in a real app, fetch from a database)
-    fapi = Finance_API()
     articles = fapi.get_news()["content"]
     article = articles[0]
     related_articles = articles[1:]
