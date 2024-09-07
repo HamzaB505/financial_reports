@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
+from flask import (Flask, render_template, request, redirect,
+                   url_for, jsonify, session, flash)
+from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 import matplotlib.pyplot as plt
 import io
@@ -7,6 +9,7 @@ from api.query_handler import QueryHandler
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from api.finance_modeling_api import Finance_API
 import plotly.graph_objs as go
 import json
 from flask import jsonify
@@ -17,14 +20,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ["FLASK_KEY"]
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+fapi = Finance_API()
 db = SQLAlchemy(app)
-# Dummy data for demonstration purposes
-financial_data = {
-    'stocks': [100, 120, 80, 130, 150],
-    'bonds': [50, 60, 55, 65, 70],
-    'crypto': [200, 180, 220, 210, 230]
-}
 
 @app.route('/')
 def landing_page():
@@ -57,7 +54,7 @@ def signup():
 
         session['user_id'] = new_user.id
         flash('Thank you for signing up!')
-        return redirect(url_for('chatbot'))
+        return redirect(url_for('news_details'))
     return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -109,6 +106,16 @@ def dashboard():
         flash('Please log in to access this page.')
         return redirect(url_for('login'))
     return render_template('dashboard.html')
+
+
+
+@app.route('/')
+def index():
+    # Example list of options
+    fapi.get_balance_sheet()  # 1000 options
+
+    return render_template('index.html', options=options)
+
 
 @app.route('/get_plot_data', methods=['POST'])
 def get_plot_data():
@@ -166,6 +173,14 @@ def generate_revenue_vs_profit_plot(company, financial_data):
 
     plot_html = fig.to_html(full_html=False)
     return plot_html
+
+@app.route('/news_details')
+def news_details():
+    # Example article data (in a real app, fetch from a database)
+    articles = fapi.get_news()["content"]
+    article = articles[0]
+    related_articles = articles[1:]
+    return render_template('news_details.html', article=article, related_articles=related_articles)
 
 
 if __name__ == '__main__':
