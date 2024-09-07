@@ -12,7 +12,8 @@
 <body>
     <div class="sidebar">
         <button class="closebtn" onclick="toggleSidebar()">×</button>
-        <a href="/">Home page</a>
+        <a href="/">Home</a>
+        <a href="/news_details">Financial News</a>
         <a href="/chatbot">Chatbot</a>
         <a href="/dashboard">Dashboard</a>
         <a href="/logout">Logout</a>
@@ -24,12 +25,12 @@
 
         <div class="toolbar">
             <div class="info-bar">
-                <div class="select-group">
-                    <label for="company-select">Select Company:</label>
-                    <select id="company-select">
-                        <option value="AAPL">Apple (AAPL)</option>
-                        <option value="MSFT">Microsoft (MSFT)</option>
-                        <!-- Add more options as needed -->
+                <div class="select-container">
+                    <label for="long-select">Choose an option:</label>
+                    <select id="long-select" style="width: 100%;">
+                        {% for option in options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}    
                     </select>
                 </div>
 

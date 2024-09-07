@@ -80,6 +80,14 @@ nav ul li a:hover {
     margin-bottom: 20px;
 }
 
+.hero input[type="username"] {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+}
+
 .hero input[type="email"] {
     flex: 1;
     padding: 10px;

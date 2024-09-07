@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.title }} - Financial News</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='news_details.css') }}">
+</head>
+
+<body>
+    <div class="sidebar">
+        <button class="closebtn" onclick="toggleSidebar()">×</button>
+        <a href="/">Home</a>
+        <a href="/news_details">Financial News</a>
+        <a href="/chatbot">Chatbot</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="content">
+        <button class="openbtn" onclick="toggleSidebar()">☰</button>
+
+        <article class="main-article">
+            <h1>{{ article.title }}</h1>
+            <p class="date-author"><strong>{{ article.date }}</strong> | By {{ article.author }}</p>
+
+            <div class="article-image">
+                <img src="{{ article.image }}" alt="{{ article.title }}">
+            </div>
+
+            <div class="article-content">
+                {{ article.content | safe }}
+            </div>
+        </article>
+
+        <aside class="related-news">
+            <h2>Related News</h2>
+            <section class="news-grid">
+                {% for related in related_articles %}
+                <div class="news-card">
+                    <img src="{{ related.image }}" alt="{{ related.title }}">
+                    <div class="news-info">
+                        <h3>{{ related.title }}</h3>
+                        <a href="{{ related.link }}" class="read-more">Read full article</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+        </aside>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.querySelector('.sidebar');
+            var content = document.querySelector('.content');
+            
+            if (sidebar.style.width === '250px') {
+                sidebar.style.width = '0';
+                content.classList.remove('sidebar-open');
+                content.classList.add('sidebar-closed');
+            } else {
+                sidebar.style.width = '250px';
+                content.classList.remove('sidebar-closed');
+                content.classList.add('sidebar-open');
+            }
+        }
+    </script>
+    
+</body>
+
+</html>
