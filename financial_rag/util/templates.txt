@@ -1,0 +1,140 @@
+1. Comprehensive Financial Analysis
+Prompt:
+
+"Given the following income statement and balance sheet data, perform a comprehensive financial analysis of [Company Name] for the fiscal years [Year X] to [Year Y]. Calculate key financial ratios, including profitability, liquidity, and solvency ratios. Provide interpretations of these ratios and discuss trends over the specified period. Highlight any areas of concern or notable improvements that could impact investment decisions."
+
+Data Required:
+
+Income Statements for [Year X] to [Year Y]
+Balance Sheets for [Year X] to [Year Y]
+2. Profitability Assessment
+Prompt:
+
+"Analyze the profitability of [Company Name] using the provided income statements. Calculate gross profit margin, operating profit margin, net profit margin, return on assets (ROA), and return on equity (ROE) for each year from [Year X] to [Year Y]. Explain what these ratios indicate about the company's operational efficiency and overall financial performance."
+
+Data Required:
+
+Income Statements for [Year X] to [Year Y]
+3. Liquidity and Solvency Evaluation
+Prompt:
+
+"Using the balance sheet data, evaluate the liquidity and solvency of [Company Name]. Calculate the current ratio, quick ratio, debt-to-equity ratio, and interest coverage ratio for each year from [Year X] to [Year Y]. Discuss the company's ability to meet short-term obligations and its long-term financial stability."
+
+Data Required:
+
+Balance Sheets for [Year X] to [Year Y]
+Income Statements (for interest expenses) if assessing interest coverage ratio
+4. Cash Flow Analysis
+Prompt:
+
+"Examine the cash flow statements of [Company Name] for the years [Year X] to [Year Y]. Analyze cash flows from operating, investing, and financing activities. Identify any significant changes or trends and discuss their potential implications on the company's liquidity and future operations."
+
+Data Required:
+
+Cash Flow Statements for [Year X] to [Year Y]
+5. Cost of Operations Examination
+Prompt:
+
+"Review the cost of operations data for [Company Name]. Break down the operating expenses into key components such as cost of goods sold (COGS), selling, general and administrative expenses (SG&A), and research and development (R&D) costs. Analyze how these costs have evolved over time and assess their impact on the company's profitability."
+
+Data Required:
+
+Detailed Income Statements highlighting operational costs for [Year X] to [Year Y]
+6. Trend and Comparative Analysis
+Prompt:
+
+"Perform a trend analysis of [Company Name]'s financial performance over the past [X] years. Compare these trends with industry averages and key competitors. Highlight areas where the company is outperforming or underperforming relative to its peers."
+
+Data Required:
+
+Financial Statements of [Company Name] for [Year X] to [Year Y]
+Industry Average Ratios and Competitor Financials for the same period
+7. SWOT Analysis Based on Financial Data
+Prompt:
+
+"Conduct a SWOT analysis (Strengths, Weaknesses, Opportunities, Threats) of [Company Name] using the provided financial data. Focus on financial strengths and weaknesses, and discuss how external opportunities and threats could affect the company's financial health."
+
+Data Required:
+
+All relevant financial statements
+Notes on market conditions and industry trends
+8. Investment Valuation
+Prompt:
+
+"Using valuation methods such as the Discounted Cash Flow (DCF) model and relative valuation metrics (P/E ratio, EV/EBITDA), determine the intrinsic value of [Company Name]. Assess whether the company's stock is undervalued, overvalued, or fairly valued in the market. Provide recommendations for investors based on your findings."
+
+Data Required:
+
+Projected Free Cash Flows
+Current Stock Price
+Earnings Data
+Industry Multiples
+9. Risk Analysis
+Prompt:
+
+"Identify and evaluate the financial risks associated with investing in [Company Name]. Consider factors such as debt levels, cash flow volatility, revenue concentration, and exposure to market fluctuations. Provide an overall risk assessment and suggest mitigation strategies."
+
+Data Required:
+
+Financial Statements
+Debt Maturity Schedules
+Revenue Breakdown by Segment/Product
+10. Key Performance Indicators (KPIs) Monitoring
+Prompt:
+
+"List and analyze the key performance indicators (KPIs) relevant to [Company Name]'s industry. Assess how the company is performing against these KPIs over the past [X] periods. Discuss the implications of these performance metrics on the company's operational efficiency and future growth prospects."
+
+Data Required:
+
+Financial and Operational Data relevant to KPIs
+Industry Benchmark Data
+11. Management Efficiency Analysis
+Prompt:
+
+"Evaluate the efficiency of [Company Name]'s management by analyzing financial ratios such as asset turnover, inventory turnover, and accounts receivable turnover. Discuss how effectively the company is utilizing its assets to generate revenue and manage its working capital."
+
+Data Required:
+
+Balance Sheets
+Income Statements
+Notes on Inventory and Receivables
+12. Economic and Market Impact Assessment
+Prompt:
+
+"Assess how current economic conditions and market trends could impact [Company Name]'s financial performance. Consider factors such as interest rates, inflation, exchange rates, and changes in consumer behavior. Provide insights into potential risks and opportunities arising from these external factors."
+
+Data Required:
+
+Company's Financial Data
+Macroeconomic Indicators
+Market Research Reports
+Instructions for Using the Templates:
+Data Preparation:
+
+Ensure all financial statements are complete and accurate.
+Present data in a structured format (tables, spreadsheets) for clarity.
+Customization:
+
+Replace placeholders like [Company Name], [Year X], [Year Y], and [X] with specific details relevant to your analysis.
+Adjust the prompts to focus on particular areas of interest if needed.
+Contextual Information:
+
+Provide additional context such as industry sector, market position, and any recent news or events that may affect the analysis.
+Clear Formatting:
+
+Use headings, bullet points, and tables to organize data and findings.
+Highlight key figures and trends to draw attention to important insights.
+Expected Output Guidance:
+
+Specify the depth of analysis required (e.g., summary vs. detailed report).
+Encourage the LLM to provide interpretations alongside calculations.
+Example of a Filled-Out Prompt
+Prompt:
+
+"Given the following income statement and balance sheet data, perform a comprehensive financial analysis of ABC Corporation for the fiscal years 2018 to 2022. Calculate key financial ratios, including profitability, liquidity, and solvency ratios. Provide interpretations of these ratios and discuss trends over the specified period. Highlight any areas of concern or notable improvements that could impact investment decisions."
+
+Data Provided:
+
+(Include detailed income statements and balance sheets for ABC Corporation from 2018 to 2022.)
+
+By using these templates, you guide the LLM to focus on specific aspects of financial analysis, ensuring that the output is relevant and insightful for investment decision-making. These prompts encourage thorough examination and interpretation of financial data, helping to extract meaningful insights that can influence investment strategies.
